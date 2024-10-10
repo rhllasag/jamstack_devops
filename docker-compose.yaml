@@ -1,0 +1,41 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  express:
+    build:
+      context: './../'
+      dockerfile: devops/express/Dockerfile
+    container_name: node_express
+    volumes:
+      - ../jam_api/:/var/www/jam_api/:rw
+    ports:
+    - 8082:8080
+    networks:
+    - jamstack_net
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+    - jamstack_net
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+    - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+    networks:
+    - jamstack_net
+
+networks:
+  jamstack_net:
+    name: jamstack_net
