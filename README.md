@@ -1,7 +1,6 @@
 # JAMStack
 ``cd devops``
-``docker-compose up -d ``
-``docker-compose build --no-cache``
+``docker-compose --env-file ./envs/.env.dev up -d --build``
 ## Database
 MongoDB
 ``http://localhost:8081``
