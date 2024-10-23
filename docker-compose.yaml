@@ -3,17 +3,17 @@ version: '3.1'
 
 services:
 
-  express:
+  quasar:
     build:
       context: './../'
-      dockerfile: devops/express/Dockerfile
-    container_name: node_express_${ENV}
+      dockerfile: devops/quasar/Dockerfile
+    container_name: node_quasar_${ENV}
     volumes:
-      - ../jam_api/:/var/www/jam_api/:rw
+      - ../quasar_vue/:/var/www/quasar/:rw
     ports:
-    - ${EXPRESSPORT}:${EXPRESSPORT}
+    - ${VUEPORT}:${VUEPORT}
     networks:
-    - jamstack_net
+    - menu_net
   flask:
     build:
       context: './../'
@@ -30,7 +30,7 @@ services:
     ports:
     - ${FLASKPORT}:${FLASKPORT}
     networks:
-    - jamstack_net
+    - menu_net
   mongo:
     image: mongo
     restart: always
@@ -39,7 +39,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGOUSER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGOPASS}
     networks:
-    - jamstack_net
+    - menu_net
 
   mongo-express:
     image: mongo-express
@@ -53,8 +53,8 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://${MONGOUSER}:${MONGOPASS}@${MONGOHOST}:${MONGOPORT}/
       ME_CONFIG_BASICAUTH: false
     networks:
-    - jamstack_net
+    - menu_net
 
 networks:
-  jamstack_net:
-    name: jamstack_net
+  menu_net:
+    name: menu_net
