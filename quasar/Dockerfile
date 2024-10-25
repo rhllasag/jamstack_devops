@@ -1,15 +1,32 @@
+# Stage 1: Use the official Node.js Alpine image as the base image
 FROM node:21.7.3
-# Create app directory
+
+# Set the working directory inside the container
 RUN mkdir -p /var/www/quasar:
 WORKDIR /var/www/quasar
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY ./quasar_vue/package*.json ./
+
+# Copy necessary files for dependency installation
+COPY ./quasar_vue/* ./
+COPY ./quasar_vue/src/ ./src/
+COPY ./quasar_vue/public/ ./public/
+
+# Install dependences
+RUN rm -rf node_modules package-lock.json
+
+# Install dependencies
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
-# Bundle app source
+
+# Build the Quasar app for production
+RUN npx quasar build
+
+# Copy the rest of the application source code
 COPY . .
-EXPOSE 9000
-CMD [ "npx", "quasar", "build" ]
+
+# Install a web server to serve the built files
+RUN npm install -g serve
+
+# Expose the port that the app will run on
+EXPOSE 3000
+
+# Command to run the application
+CMD ["serve", "-s", "dist/spa"]
